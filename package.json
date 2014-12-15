@@ -1,0 +1,15 @@
+{
+    "version": "1.0.0-dev",
+    "private": true,
+    "name": "baidu music",
+    "description": "百度音乐随心听",
+    "license": "MIT",
+    "devDependencies": {
+        "lame": "*",
+        "speaker": "*",
+        "async": "*",
+        "request": "*"
+    },
+    "main":"baidu.js",
+    "bin":"bin/cli"
+}

@@ -1,0 +1,169 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'player', '-g' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose cache add [ 'player', null ]
+5 verbose cache add name=undefined spec="player" args=["player",null]
+6 verbose parsed url { protocol: null,
+6 verbose parsed url   slashes: null,
+6 verbose parsed url   auth: null,
+6 verbose parsed url   host: null,
+6 verbose parsed url   port: null,
+6 verbose parsed url   hostname: null,
+6 verbose parsed url   hash: null,
+6 verbose parsed url   search: null,
+6 verbose parsed url   query: null,
+6 verbose parsed url   pathname: 'player',
+6 verbose parsed url   path: 'player',
+6 verbose parsed url   href: 'player' }
+7 silly lockFile 889c6853-player player
+8 verbose lock player /Users/lijunliang/.npm/889c6853-player.lock
+9 silly lockFile 889c6853-player player
+10 silly lockFile 889c6853-player player
+11 verbose addNamed [ 'player', '' ]
+12 verbose addNamed [ null, '*' ]
+13 silly lockFile 4bce132b-player player@
+14 verbose lock player@ /Users/lijunliang/.npm/4bce132b-player.lock
+15 silly addNameRange { name: 'player', range: '*', hasData: false }
+16 verbose request where is /player
+17 verbose request registry https://registry.npmjs.org/
+18 verbose request id 18527aa7445feb84
+19 verbose url raw /player
+20 verbose url resolving [ 'https://registry.npmjs.org/', './player' ]
+21 verbose url resolved https://registry.npmjs.org/player
+22 verbose request where is https://registry.npmjs.org/player
+23 info trying registry request attempt 1 at 17:09:38
+24 http GET https://registry.npmjs.org/player
+25 http 200 https://registry.npmjs.org/player
+26 silly registry.get cb [ 200,
+26 silly registry.get   { date: 'Mon, 15 Dec 2014 09:09:39 GMT',
+26 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+26 silly registry.get     etag: '"75UB133XYVWTM4R0TCVH26AC"',
+26 silly registry.get     'content-type': 'application/json',
+26 silly registry.get     'cache-control': 'max-age=60',
+26 silly registry.get     'content-length': '23187',
+26 silly registry.get     'accept-ranges': 'bytes',
+26 silly registry.get     via: '1.1 varnish',
+26 silly registry.get     age: '0',
+26 silly registry.get     'x-served-by': 'cache-ty66-TYO',
+26 silly registry.get     'x-cache': 'MISS',
+26 silly registry.get     'x-cache-hits': '0',
+26 silly registry.get     'x-timer': 'S1418634579.315718,VS0,VE373',
+26 silly registry.get     vary: 'Accept',
+26 silly registry.get     'keep-alive': 'timeout=10, max=50',
+26 silly registry.get     connection: 'Keep-Alive' } ]
+27 silly addNameRange number 2 { name: 'player', range: '*', hasData: true }
+28 silly addNameRange versions [ 'player',
+28 silly addNameRange   [ '0.0.0',
+28 silly addNameRange     '0.0.1',
+28 silly addNameRange     '0.0.2',
+28 silly addNameRange     '0.0.3',
+28 silly addNameRange     '0.0.4',
+28 silly addNameRange     '0.0.5',
+28 silly addNameRange     '0.0.6',
+28 silly addNameRange     '0.0.7',
+28 silly addNameRange     '0.0.8',
+28 silly addNameRange     '0.0.9',
+28 silly addNameRange     '0.1.0',
+28 silly addNameRange     '0.1.1',
+28 silly addNameRange     '0.1.2',
+28 silly addNameRange     '0.1.3',
+28 silly addNameRange     '0.1.4',
+28 silly addNameRange     '0.1.5',
+28 silly addNameRange     '0.1.6',
+28 silly addNameRange     '0.1.7',
+28 silly addNameRange     '0.1.8',
+28 silly addNameRange     '0.2.0',
+28 silly addNameRange     '0.3.0' ] ]
+29 verbose addNamed [ 'player', '0.3.0' ]
+30 verbose addNamed [ '0.3.0', '0.3.0' ]
+31 silly lockFile 578d7d15-player-0-3-0 player@0.3.0
+32 verbose lock player@0.3.0 /Users/lijunliang/.npm/578d7d15-player-0-3-0.lock
+33 silly lockFile 43c35ece-pmjs-org-player-player-0-3-0-tgz https://registry.npmjs.org/player/-/player-0.3.0.tgz
+34 verbose lock https://registry.npmjs.org/player/-/player-0.3.0.tgz /Users/lijunliang/.npm/43c35ece-pmjs-org-player-player-0-3-0-tgz.lock
+35 verbose addRemoteTarball [ 'https://registry.npmjs.org/player/-/player-0.3.0.tgz',
+35 verbose addRemoteTarball   'a306a738ffe4dd7d2e50323118e6eb45800a7c7a' ]
+36 info retry fetch attempt 1 at 17:09:40
+37 verbose fetch to= /var/folders/sr/2qbn2tbx1f9g4nhxp2yvngh80000gp/T/npm-8373-0Ja6Ohg3/registry.npmjs.org/player/-/player-0.3.0.tgz
+38 http GET https://registry.npmjs.org/player/-/player-0.3.0.tgz
+39 http 200 https://registry.npmjs.org/player/-/player-0.3.0.tgz
+40 silly lockFile 43c35ece-pmjs-org-player-player-0-3-0-tgz https://registry.npmjs.org/player/-/player-0.3.0.tgz
+41 silly lockFile 43c35ece-pmjs-org-player-player-0-3-0-tgz https://registry.npmjs.org/player/-/player-0.3.0.tgz
+42 silly lockFile 578d7d15-player-0-3-0 player@0.3.0
+43 silly lockFile 578d7d15-player-0-3-0 player@0.3.0
+44 silly lockFile 4bce132b-player player@
+45 silly lockFile 4bce132b-player player@
+46 silly resolved [ { name: 'player',
+46 silly resolved     version: '0.3.0',
+46 silly resolved     description: 'a command line player, supports play mp3 both from url and local stream.',
+46 silly resolved     main: 'index.js',
+46 silly resolved     bin: { player: 'bin/cli' },
+46 silly resolved     scripts:
+46 silly resolved      { 'example-add': 'DEBUG=player,player:* node examples/add.js',
+46 silly resolved        'example-local': 'DEBUG=player,player:* node examples/local.js',
+46 silly resolved        'example-stream': 'DEBUG=player,player:* node examples/stream.js 2>/dev/null' },
+46 silly resolved     repository: { type: 'git', url: 'https://github.com/turingou/player.git' },
+46 silly resolved     keywords: [ 'mp3', 'cli', 'audio', 'player', 'cli player' ],
+46 silly resolved     author: { name: 'turing', email: 'o.u.turing@gmail.com' },
+46 silly resolved     license: 'MIT',
+46 silly resolved     bugs: { url: 'https://github.com/turingou/player/issues' },
+46 silly resolved     dependencies:
+46 silly resolved      { async: '^0.9.0',
+46 silly resolved        home: '^0.1.3',
+46 silly resolved        lame: '1.1.1',
+46 silly resolved        speaker: '0.2.1',
+46 silly resolved        pool_stream: '0.0.2',
+46 silly resolved        underscore: '~1.6.0' },
+46 silly resolved     devDependencies: { debug: '^2.1.0' },
+46 silly resolved     gitHead: '48afcec268fcb053962f73d6c9f0338db2a1b07d',
+46 silly resolved     homepage: 'https://github.com/turingou/player',
+46 silly resolved     _id: 'player@0.3.0',
+46 silly resolved     _shasum: 'a306a738ffe4dd7d2e50323118e6eb45800a7c7a',
+46 silly resolved     _from: 'player@',
+46 silly resolved     _npmVersion: '2.1.5',
+46 silly resolved     _nodeVersion: '0.10.32',
+46 silly resolved     _npmUser: { name: 'turing', email: 'o.u.turing@gmail.com' },
+46 silly resolved     maintainers: [ [Object] ],
+46 silly resolved     dist:
+46 silly resolved      { shasum: 'a306a738ffe4dd7d2e50323118e6eb45800a7c7a',
+46 silly resolved        tarball: 'http://registry.npmjs.org/player/-/player-0.3.0.tgz' },
+46 silly resolved     directories: {},
+46 silly resolved     _resolved: 'https://registry.npmjs.org/player/-/player-0.3.0.tgz' } ]
+47 info install player@0.3.0 into /usr/local/lib
+48 info installOne player@0.3.0
+49 verbose lib/node_modules/player unbuild
+50 verbose tar unpack /Users/lijunliang/.npm/player/0.3.0/package.tgz
+51 silly lockFile 7b5b50af-sr-local-lib-node-modules-player tar:///usr/local/lib/node_modules/player
+52 verbose lock tar:///usr/local/lib/node_modules/player /Users/lijunliang/.npm/7b5b50af-sr-local-lib-node-modules-player.lock
+53 silly lockFile 8c1d3547-ang-npm-player-0-3-0-package-tgz tar:///Users/lijunliang/.npm/player/0.3.0/package.tgz
+54 verbose lock tar:///Users/lijunliang/.npm/player/0.3.0/package.tgz /Users/lijunliang/.npm/8c1d3547-ang-npm-player-0-3-0-package-tgz.lock
+55 silly gunzTarPerm modes [ '755', '644' ]
+56 error Error: EACCES, mkdir '/usr/local/lib/node_modules/player'
+56 error  { [Error: EACCES, mkdir '/usr/local/lib/node_modules/player']
+56 error   errno: 3,
+56 error   code: 'EACCES',
+56 error   path: '/usr/local/lib/node_modules/player',
+56 error   fstream_type: 'Directory',
+56 error   fstream_path: '/usr/local/lib/node_modules/player',
+56 error   fstream_class: 'DirWriter',
+56 error   fstream_stack:
+56 error    [ '/usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23',
+56 error      '/usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53',
+56 error      'Object.oncomplete (fs.js:107:15)' ] }
+57 error Please try running this command again as root/Administrator.
+58 error System Darwin 12.5.0
+59 error command "node" "/usr/local/bin/npm" "install" "player" "-g"
+60 error cwd /opt/baidu.fm
+61 error node -v v0.10.33
+62 error npm -v 1.4.28
+63 error path /usr/local/lib/node_modules/player
+64 error fstream_path /usr/local/lib/node_modules/player
+65 error fstream_type Directory
+66 error fstream_class DirWriter
+67 error code EACCES
+68 error errno 3
+69 error stack Error: EACCES, mkdir '/usr/local/lib/node_modules/player'
+70 error fstream_stack /usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23
+70 error fstream_stack /usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53
+70 error fstream_stack Object.oncomplete (fs.js:107:15)
+71 verbose exit [ 3, true ]
