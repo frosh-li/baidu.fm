@@ -1,7 +1,7 @@
 {
     "version": "1.0.0-dev",
     "private": true,
-    "name": "baidu music",
+    "name": "baidu.fm",
     "description": "百度音乐随心听",
     "repository": "https://github.com/frosh-li/baidu.fm",
     "license": "MIT",
