@@ -9,12 +9,14 @@
     "speaker": "*",
     "async": "*",
     "request": "*",
-    "keypress": "*"
+    "keypress": "*",
+    "pool_stream": "0.0.3",
+    "ninja-colorlog": "0.0.1"
   },
   "main": "baidu.js",
   "bin": "bin/cli",
   "devDependencies": {
-    "keypress": "^0.2.1",
-    "pool_stream": "0.0.3"
+    "color": "~0.7.3",
+    "ninja-colorlog": "0.0.1"
   }
 }

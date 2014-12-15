@@ -5,6 +5,7 @@ var async = require("async");
 var request = require("request");
 var keypress = require("keypress");
 var PoolStream = require('pool_stream');
+var colorlog = require('ninja-colorlog');
 // Create the Speaker instance
 
 
@@ -12,7 +13,10 @@ var PoolStream = require('pool_stream');
 //process.stdin.pipe(speaker);
 //fs.createReadStream("./aaa.mp3").pipe(new lame.Decoder()).pipe(new Speaker());
 var globalSongList = [];
-var speaker = new Speaker();
+var speaker,
+    readableStream,
+    gdecoder,
+    buffer;
 function play(){
     if(globalSongList.length < 1){
         getPlayerList(function(){
@@ -29,13 +33,14 @@ function _blank(){
 
 function _play(){
     var song = globalSongList.shift();
-    console.log('正在播放',song.artistName,"的",song.songName,song.songLink);
-    request.get(song.songLink,function(err,res){
-        var pool = new PoolStream();
-        res.pipe(pool);        
-        pool.pipe(new lame.Decoder()).pipe(speaker).on('close',play);
-        speaker.readableStream = pool;
-    });
+    colorlog.log.green('正在播放',song.artistName,"的",song.songName);
+    var req = request(song.songLink);
+    var decoder = new lame.Decoder();
+    speaker = new Speaker();
+    buffer = req.pipe(decoder);
+    buffer.pipe(speaker).on('close', play);
+    readableStream = req;
+    gdecoder = decoder;
 }
 
 function getPlayerList(cb){
@@ -87,16 +92,24 @@ function listParse(songlists){
     return ret;
 }
 
+
 keypress(process.stdin);
 process.stdin.on("keypress", function(ch,key){
     if(key && key.name == "n"){
-        try{
-            speaker.readableStream.unpipe();
-            speaker.end();
-        }catch(e){
-            _blank();
-        }
-        play();
+        gdecoder.unpipe();
+        gdecoder = null;
+        speaker.end();
+        //process.stdin.pause();
+    }
+    if(key && key.name == "x"){
+        process.exit(0);
     }
 });
+process.stdin.setRawMode(true);
+process.stdin.resume();
+colorlog.log.green('----------------------');
+colorlog.log.red('    百度音乐随心听');
+colorlog.log.green('    n: 下一首');
+colorlog.log.green('    x: 退出播放器');
+colorlog.log.green('----------------------');
 exports.play = play;
