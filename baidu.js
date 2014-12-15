@@ -64,5 +64,4 @@ function listParse(songlists){
     });
     return ret;
 }
-
-getPlayerList();
+exports.play = getPlayerList;
