@@ -15,3 +15,8 @@ $ sudo apt-get install libasound2-dev
 
 Run
 baidu.fm
+
+获取git获取后
+npm install
+然后
+npm start也可以启动

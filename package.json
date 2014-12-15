@@ -18,5 +18,8 @@
   "devDependencies": {
     "color": "~0.7.3",
     "ninja-colorlog": "0.0.1"
+  },
+  "scripts":{
+    "start": "bin/cli"
   }
 }
