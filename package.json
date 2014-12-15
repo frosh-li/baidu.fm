@@ -3,6 +3,7 @@
     "private": true,
     "name": "baidu music",
     "description": "百度音乐随心听",
+    "repository": "https://github.com/frosh-li/baidu.fm",
     "license": "MIT",
     "devDependencies": {
         "lame": "*",
