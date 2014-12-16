@@ -30,7 +30,6 @@ Player.prototype.playNext = function(){
     this.decoderStream.unpipe();
     this.decoderStream = null;
     this.speaker.end();
-    this._play();
 }
 
 Player.prototype.attackEvent = function(){
@@ -96,9 +95,12 @@ Player.prototype._play = function(){
     var decoder = new lame.Decoder();
     self.speaker = new Speaker();
     buffer = req.pipe(decoder);
-    buffer.pipe(self.speaker).on('end', function(){
-        self.songList.shift();
-        self.play();
+    buffer.pipe(self.speaker).on('close', function(){
+        if(!self.stoped){
+            self.songList.shift();
+            self.play();
+        }
+        
     });
     self.decoderStream = decoder;
 }
