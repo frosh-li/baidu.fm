@@ -1,3 +1,4 @@
 #!/usr/bin/env node
-var Player = require("../baidu.js");
-Player.play();
+var Player = require("../libs/player.js");
+var player = new Player();
+player.play();

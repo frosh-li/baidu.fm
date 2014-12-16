@@ -129,7 +129,7 @@ function listParse(songlists){
 function getMp3Lists(ids, cb){
     var now = Date.now();
     var url = "http://music.baidu.com/data/music/fmlink?songIds="+ids.join(",")+"&type=mp3&rate=128&callback=jsonlink"+now+"&_="+now;
-    console.log(url);
+    //console.log(url);
     request(url, function(err, response, body){
         if(err){
             //console.log(err);
