@@ -49,6 +49,7 @@ Player.prototype.attackEvent = function(){
             self.playNext();
         }
         if(key && key.name == "x"){
+            process.stdout.clearScreenDown();
             process.exit(0);
         }
         if(key && key.name == "s"){
@@ -68,17 +69,7 @@ Player.prototype.attackEvent = function(){
     });
     process.stdin.setRawMode(true);
     process.stdin.resume();
-    process.stdout.cursorTo(0,0);
-    process.stdout.clearScreenDown();
-    colorlog.log.green('----------------------');
-    colorlog.log.red('    百度音乐随心听');
-    colorlog.log.green('    n: 下一首');
-    colorlog.log.green('    p: 继续');
-    colorlog.log.green('    s: 暂停');
-    colorlog.log.green('    w: 选择音乐频道');
-    colorlog.log.green('    l: 打印剩余歌单');
-    colorlog.log.green('    x: 退出播放器');
-    colorlog.log.green('----------------------');
+    print_Common();
 };
 
 Player.prototype.print_channel = function(){
@@ -134,8 +125,7 @@ Player.prototype.stop = function(){
     this.decoderStream && this.decoderStream.unpipe();
     this.decoderStream = null;
     this.speaker && this.speaker.end();
-    process.stdout.moveCursor(0,-2);
-    process.stdout.clearScreenDown();
+    print_Common();
 };
 
 Player.prototype.getSongs = function(cb){
@@ -157,6 +147,7 @@ Player.prototype.getSongs = function(cb){
 
 Player.prototype.printList = function(){
     var list = this.songList;
+    print_Common();
     colorlog.log.yellow('正在打印剩余歌曲列表');
     list.forEach(function(song){
         console.log(song.artistName,song.songName);
@@ -166,6 +157,7 @@ Player.prototype.printList = function(){
 Player.prototype._play = function(){
     var self = this;
     var song = self.songList[0];
+    print_Common();
     colorlog.log.green('开始缓冲',song.artistName,"的",song.songName);
     var req = request.get(song.songLink);
     var decoder = new lame.Decoder();
@@ -183,12 +175,11 @@ Player.prototype._play = function(){
         process.stdout.moveCursor(0,-1);
         process.stdout.clearLine();
         totalSize = res.headers['content-length'];
+        print_Common();
         colorlog.log.green('开始播放',song.artistName,"的",song.songName,"size",new Number(res.headers['content-length']/1024/1024).toFixed(2)+"M");
         self.startLrcShow();
         //colorlog.log.blue('下载进度监控', "0%");
     }).on('error',function(err){
-        process.stdout.moveCursor(0,-1);
-        process.stdout.clearLine();
         console.log('缓冲音乐失败，请检查网络后重试');
     }).on('data', function(chunk){
         if(typeof chunk != "string"){
@@ -198,8 +189,8 @@ Player.prototype._play = function(){
         //process.stdout.clearLine();
         //colorlog.log.blue('下载进度监控', parseInt((downloaded / totalSize) * 100) +"%");
     }).on('close', function(res){
-        process.stdout.moveCursor(0,-2);
-        process.stdout.clearScreenDown();
+        //process.stdout.moveCursor(0,-2);
+        //process.stdout.clearScreenDown();
         //console.log('当前音乐下载完成');
     });
     buffer = req.pipe(decoder);
@@ -222,6 +213,7 @@ Player.prototype.startLrcShow = function(){
     if(self.lrcInter){
         clearInterval(self.lrcInter);
     }
+
     console.log('');
     self.lrcInter = setInterval(function(){
         var goTime = Date.now() - start;
@@ -247,9 +239,9 @@ Player.prototype.startLrcShow = function(){
             
             //console.log(min+":"+sec+"."+miniSec);
             if(lrc[2].trim() != ""){
-                process.stdout.moveCursor(0,-1);
+                process.stdout.cursorTo(0,11);
                 process.stdout.clearLine();
-                colorlog.log.yellow(lrc[2]);
+                colorlog.log.yellow(lrc[2]+"\n\n");
             }
         }
     },5);
@@ -290,5 +282,17 @@ function getMp3Lists(ids, cb){
         cb(list);
     });
 }
-
+function print_Common(){
+    process.stdout.cursorTo(0,0);
+    process.stdout.clearScreenDown();
+    colorlog.log.green('----------------------');
+    colorlog.log.red('    百度音乐随心听');
+    colorlog.log.green('    n: 下一首');
+    colorlog.log.green('    p: 继续');
+    colorlog.log.green('    s: 暂停');
+    colorlog.log.green('    w: 选择音乐频道');
+    colorlog.log.green('    l: 打印剩余歌单');
+    colorlog.log.green('    x: 退出播放器');
+    colorlog.log.green('----------------------');
+}
 module.exports = Player;
