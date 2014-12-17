@@ -168,7 +168,7 @@ Player.prototype._play = function(){
         if(err){
             return;
         }
-        self.lrc = body.toString("utf-8").replace(/\n/g,"");
+        self.lrc = body.toString("utf-8");
     });
     req.on('response', function(res){
         //console.log(res.headers);
@@ -217,11 +217,11 @@ Player.prototype.startLrcShow = function(){
     console.log('');
     self.lrcInter = setInterval(function(){
         var goTime = Date.now() - start;
-        var sec = parseInt(goTime / 1000); // 过去的秒数
+        var sec = (parseInt(goTime / 1000)%60); // 过去的秒数
         if(sec < 10){
             sec = "0"+sec;
         }
-        var min = Math.floor(sec / 60);
+        var min = Math.floor(parseInt(goTime / 1000) / 60);
         min = min < 10 ? "0"+min : min;
         var miniSec = (goTime%1000);
         if(miniSec < 10){
@@ -231,7 +231,8 @@ Player.prototype.startLrcShow = function(){
         }else{
             miniSec = Math.floor(miniSec/10);
         }
-        var reg = new RegExp(min+":"+sec+"."+miniSec+"(.{1})([^\\[]*)");
+        var regs = min+":"+sec+"."+miniSec+"(.{1})([^\\n]*)";
+        var reg = new RegExp(regs,"m");
         var lrc = self.lrc.match(reg);
         
         //console.log(lrc);
@@ -245,6 +246,8 @@ Player.prototype.startLrcShow = function(){
             }
         }
     },5);
+    
+    //setTimeout(function(){process.stdout.cursorTo(0,15);console.log(self.lrc);},5000);
 };
 
 function getIds(list,cb){
