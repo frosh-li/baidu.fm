@@ -23,6 +23,7 @@ function Player(){
     this.channel = "public_fengge_liuxing";
     this.attackEvent();
     this.channelChange();
+    this.menuStatus = 0;
 }
 
 Player.prototype.play = function(){
@@ -82,9 +83,14 @@ Player.prototype.attackEvent = function(){
 
 Player.prototype.print_channel = function(){
     var self = this;
+    if(self.menuStatus == 1){
+        process.stdout.moveCursor(0, -37);
+        process.stdout.clearScreenDown();
+    }
     for(var i = 0 ; i < channels.length ; i++){
         colorlog.log.yellow('    '+(i+1)+': '+channels[i]['content']);
     }
+    self.menuStatus = 1;
 };
 
 Player.prototype.channelChange = function(){
@@ -103,16 +109,21 @@ Player.prototype.channelChange = function(){
             timeout = setTimeout(function(){
                 self.playChannel(input);
                 input = "";
+                self.menuStatus = 0;
             },1000);
         }
     });
 };
 
 Player.prototype.playChannel = function(key){
-    console.log('channel index', key);
+    // console.log('channel index', key);
     var self = this;
     if(!self.eventMap[key]){
         return;
+    }
+    if(self.menuStatus == 1){
+        process.stdout.moveCursor(0, -37);
+        process.stdout.clearScreenDown();
     }
     self.channel = self.eventMap[key];
     self.stop();
@@ -123,6 +134,8 @@ Player.prototype.stop = function(){
     this.decoderStream && this.decoderStream.unpipe();
     this.decoderStream = null;
     this.speaker && this.speaker.end();
+    process.stdout.moveCursor(0,-2);
+    process.stdout.clearScreenDown();
 };
 
 Player.prototype.getSongs = function(cb){
@@ -185,7 +198,9 @@ Player.prototype._play = function(){
         //process.stdout.clearLine();
         //colorlog.log.blue('下载进度监控', parseInt((downloaded / totalSize) * 100) +"%");
     }).on('close', function(res){
-        console.log('当前音乐下载完成');
+        process.stdout.moveCursor(0,-2);
+        process.stdout.clearScreenDown();
+        //console.log('当前音乐下载完成');
     });
     buffer = req.pipe(decoder);
     buffer.pipe(self.speaker).on('close', function(){
@@ -229,10 +244,13 @@ Player.prototype.startLrcShow = function(){
         
         //console.log(lrc);
         if(lrc && lrc.length > 0){
-            process.stdout.moveCursor(0,-1);
-            process.stdout.clearLine();
+            
             //console.log(min+":"+sec+"."+miniSec);
-            colorlog.log.yellow(lrc[2]);
+            if(lrc[2].trim() != ""){
+                process.stdout.moveCursor(0,-1);
+                process.stdout.clearLine();
+                colorlog.log.yellow(lrc[2]);
+            }
         }
     },10);
 };
