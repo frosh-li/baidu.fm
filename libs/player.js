@@ -24,6 +24,7 @@ function Player(){
     this.attackEvent();
     this.channelChange();
     this.menuStatus = 0;
+    this.listOpen = 0;
 }
 
 Player.prototype.play = function(){
@@ -75,13 +76,18 @@ Player.prototype.attackEvent = function(){
 Player.prototype.print_channel = function(){
     var self = this;
     if(self.menuStatus == 1){
-        process.stdout.moveCursor(0, -37);
+        process.stdout.cursorTo(0, 15);
         process.stdout.clearScreenDown();
+        self.menuStatus = 0;
+    }else{
+        process.stdout.cursorTo(0, 15);
+        process.stdout.clearScreenDown();
+        for(var i = 0 ; i < channels.length ; i++){
+            colorlog.log.yellow('    '+(i+1)+': '+channels[i]['content']);
+        }
+        self.menuStatus = 1;    
     }
-    for(var i = 0 ; i < channels.length ; i++){
-        colorlog.log.yellow('    '+(i+1)+': '+channels[i]['content']);
-    }
-    self.menuStatus = 1;
+    
 };
 
 Player.prototype.channelChange = function(){
@@ -111,10 +117,6 @@ Player.prototype.playChannel = function(key){
     var self = this;
     if(!self.eventMap[key]){
         return;
-    }
-    if(self.menuStatus == 1){
-        process.stdout.moveCursor(0, -37);
-        process.stdout.clearScreenDown();
     }
     self.channel = self.eventMap[key];
     self.stop();
@@ -147,11 +149,20 @@ Player.prototype.getSongs = function(cb){
 
 Player.prototype.printList = function(){
     var list = this.songList;
-    print_Common();
-    colorlog.log.yellow('正在打印剩余歌曲列表');
-    list.forEach(function(song){
-        console.log(song.artistName,song.songName);
-    });
+    if(this.listOpen){
+        process.stdout.cursorTo(0,15);
+        process.stdout.clearScreenDown();    
+        this.listOpen = 0;
+    }else{
+        process.stdout.cursorTo(0,15);
+        process.stdout.clearScreenDown();
+        colorlog.log.yellow('再次按下l键关闭歌单');
+        list.forEach(function(song){
+            console.log(song.artistName,song.songName);
+        });
+        this.listOpen = 1;
+    }
+    
 };
 
 Player.prototype._play = function(){
