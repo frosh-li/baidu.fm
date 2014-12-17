@@ -20,3 +20,7 @@ baidu.fm
 npm install
 然后
 npm start也可以启动
+
+播放下一首
+循环播放
+选择随心听频道功能
