@@ -252,7 +252,7 @@ Player.prototype.startLrcShow = function(){
                 colorlog.log.yellow(lrc[2]);
             }
         }
-    },10);
+    },5);
 };
 
 function getIds(list,cb){
