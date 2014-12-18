@@ -49,7 +49,7 @@ Player.prototype.attackEvent = function(){
         if(key && key.name == "n"){
             self.playNext();
         }
-        if(key && key.name == "x"){
+        if(key && key.name == "q"){
             process.stdout.clearScreenDown();
             process.exit(0);
         }
@@ -306,7 +306,7 @@ function print_Common(){
     colorlog.log.green('    s: 暂停');
     colorlog.log.green('    w: 选择音乐频道');
     colorlog.log.green('    l: 打印剩余歌单');
-    colorlog.log.green('    x: 退出播放器');
+    colorlog.log.green('    q: 退出播放器');
     colorlog.log.green('----------------------');
 }
 module.exports = Player;
