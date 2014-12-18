@@ -5,6 +5,8 @@ var async = require("async");
 var request = require("request");
 var keypress = require("keypress");
 var colorlog = require('ninja-colorlog');
+var _ = require('lodash');
+
 var channels = [{channel:"public_tuijian_rege",content:"近期最热门的歌就在这里了!"},{channel:"public_tuijian_billboard",content:"Billboard金曲全收录 最Hot欧美大流行"},{channel:"public_tuijian_ktv",content:"网罗百听不厌的K歌金曲"},{channel:"public_tuijian_wangluo",content:"你不能错过的 最红网络流行曲!"},{channel:"public_tuijian_chengmingqu",
 content:"还记得你与他们/她们相遇的第一首歌吗？"},{channel:"public_tuijian_yingshi",content:"熟悉的旋律 唤醒散落在影视剧里的回忆"},{channel:"public_tuijian_kaiche",content:"那些适合开车时听的歌 "},{channel:"public_shiguang_jingdianlaoge",content:"让我们聆听经典，回味青春。"},{channel:"public_shiguang_70hou",content:"往日的流行 今日的经典 那是属于我们的美好年代"},{channel:"public_shiguang_80hou",content:"一起听 那些陪伴80后成长的歌~"},{channel:"public_shiguang_90hou",content:"“年轻”没有定义，心与音乐共鸣!"},{channel:"public_shiguang_xinge",content:"第一时间收听潮流新曲 让耳朵新鲜每一天!"},{channel:"public_shiguang_erge",
 content:"陪宝贝唱一首童真的歌"},{channel:"public_shiguang_lvxing",content:"音乐是旅途里的回忆 也是梦想中的目的地"},{channel:"public_shiguang_yedian",content:"跟着节奏一起舞动，点燃你的激情！"},{channel:"public_fengge_minyao",content:"放慢脚步 任时光流淌成一首温暖的歌"},{channel:"public_fengge_liuxing",content:"全球流行音乐全搜罗"},{channel:"public_fengge_dj",content:"国内外嗨爆DJ舞曲大集结!"},{channel:"public_fengge_qingyinyue",content:"抛开尘世的喧嚣 直抵心灵的避风港"},{channel:"public_fengge_xiaoqingxin",content:"只属于你的清新小世界"},{channel:"public_fengge_zhongguofeng",content:"在悠扬的旋律中感受流行音乐里的东方味道"},
@@ -20,6 +22,7 @@ function Player(){
     this.eventMap = {};
     this.lrc = "";
     this.lrcInter = null;
+    this.curLrcLine = 0;
     this.channel = "public_fengge_liuxing";
     this.attackEvent();
     this.channelChange();
@@ -65,7 +68,7 @@ Player.prototype.attackEvent = function(){
         }
         if(key && key.name == "p" && self.stoped == true){
             self.stoped = false;
-            self.doPlay();   
+            self.doPlay();
         }
     });
     process.stdin.setRawMode(true);
@@ -85,9 +88,9 @@ Player.prototype.print_channel = function(){
         for(var i = 0 ; i < channels.length ; i++){
             colorlog.log.yellow('    '+(i+1)+': '+channels[i]['content']);
         }
-        self.menuStatus = 1;    
+        self.menuStatus = 1;
     }
-    
+
 };
 
 Player.prototype.channelChange = function(){
@@ -151,7 +154,7 @@ Player.prototype.printList = function(){
     var list = this.songList;
     if(this.listOpen){
         process.stdout.cursorTo(0,15);
-        process.stdout.clearScreenDown();    
+        process.stdout.clearScreenDown();
         this.listOpen = 0;
     }else{
         process.stdout.cursorTo(0,15);
@@ -162,7 +165,7 @@ Player.prototype.printList = function(){
         });
         this.listOpen = 1;
     }
-    
+
 };
 
 Player.prototype._play = function(){
@@ -175,6 +178,7 @@ Player.prototype._play = function(){
     self.speaker = new Speaker();
     var downloaded = 0;
     var totalSize = 0;
+    console.error('get lrc url: ', fmHost+song.lrcLink);
     var reqLrc = request.get(fmHost+song.lrcLink, function(err, res, body){
         if(err){
             return;
@@ -220,46 +224,90 @@ Player.prototype.doPlay = function(){
 
 Player.prototype.startLrcShow = function(){
     var self = this;
-    var start = Date.now();
-    if(self.lrcInter){
+    var lrcStart = Date.now();
+    if (self.lrcInter) {
         clearInterval(self.lrcInter);
     }
 
-    console.log('');
-    self.lrcInter = setInterval(function(){
-        var goTime = Date.now() - start;
-        var sec = (parseInt(goTime / 1000)%60); // 过去的秒数
-        if(sec < 10){
-            sec = "0"+sec;
+    var lrcObj = getLrcObj(self.lrc);
+    self.lrcInter = setInterval(function () {
+        if (!lrcObj) {
+            lrcObj = getLrcObj(self.lrc);
         }
-        var min = Math.floor(parseInt(goTime / 1000) / 60);
-        min = min < 10 ? "0"+min : min;
-        var miniSec = (goTime%1000);
-        if(miniSec < 10){
-            miniSec = "0"+miniSec;
-        }else if(miniSec < 100){
-            miniSec = "0"+Math.floor(miniSec/10);
-        }else{
-            miniSec = Math.floor(miniSec/10);
-        }
-        var regs = min+":"+sec+"."+miniSec+"(.{1})([^\\n]*)";
-        var reg = new RegExp(regs,"m");
-        var lrc = self.lrc.match(reg);
-        
-        //console.log(lrc);
-        if(lrc && lrc.length > 0){
-            
-            //console.log(min+":"+sec+"."+miniSec);
-            if(lrc[2].trim() != ""){
-                process.stdout.cursorTo(0,11);
-                process.stdout.clearLine();
-                colorlog.log.yellow(lrc[2]+"\n\n");
-            }
-        }
-    },5);
-    
-    //setTimeout(function(){process.stdout.cursorTo(0,15);console.log(self.lrc);},5000);
+        var pastTime = Date.now() - lrcStart;
+        showLines(lrcObj, 7, pastTime);
+    }, 10);
 };
+
+function getLrcObj(content) {
+    console.error('content', content);
+    if (!content) {
+        return null;
+    }
+    var obj = [];
+    var lines = content.split('\n');
+    _.forEach(lines, function (line) {
+        line = line.trim();
+        if (line.indexOf('[') !== 0) {
+            return;
+        }
+        /*
+            [
+              '[00:02.52]作曲：许嵩 作词：许嵩',
+              '00',
+              '02',
+              '52',
+              '作曲：许嵩 作词：许嵩',
+              index: 0,
+              input: '[00:02.52]作曲：许嵩 作词：许嵩'
+            ]
+        */
+        re = new RegExp(/\[([0-9]{2}):([0-9]{2})\.([0-9]{2})\](.*)/);
+        matches = line.match(re);
+        if (matches === null) {
+            return;
+        }
+        obj.push({
+            timetag: getTimeTag(matches[1], matches[2], matches[3]),
+            msg: matches[4]
+        });
+    });
+
+    return obj;
+}
+
+function getTimeTag(min, sec, ms) {
+    return min * 60 * 1000 + sec * 1000 + ms * 100;
+}
+
+function showLines(lrcObj, totalShowLine, timetag) {
+    curline = _.sortedIndex(lrcObj, {timetag: timetag}, 'timetag');
+    if (this.curLrcLine == curline) {
+        return;
+    }
+    this.curLrcLine = curline;
+    //console.log('curline: ', curline, ' timetag: ', timetag);
+
+    endIndex = curline + Math.floor(totalShowLine / 2);
+    startIndex = endIndex - totalShowLine + 1;
+    printLine = 11;
+    while(startIndex < endIndex) {
+        process.stdout.cursorTo(0, printLine);
+        process.stdout.clearLine();
+        var msg = '';
+        if (lrcObj[startIndex] && lrcObj[startIndex].msg) {
+            msg = lrcObj[startIndex].msg;
+        }
+        if (startIndex == curline) {
+            colorlog.log.yellow(msg);
+        } else {
+            colorlog.log.white(msg);
+        }
+
+        printLine += 1;
+        startIndex += 1;
+    }
+}
 
 function getIds(list,cb){
     var ret = [];
@@ -283,7 +331,7 @@ function listParse(songlists){
 function getMp3Lists(ids, cb){
     var now = Date.now();
     var url = "http://music.baidu.com/data/music/fmlink?songIds="+ids.join(",")+"&type=mp3&rate=128&callback=jsonlink"+now+"&_="+now;
-    //console.log(url);
+    console.error(url);
     request(url, function(err, response, body){
         if(err){
             //console.log(err);
