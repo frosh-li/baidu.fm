@@ -215,7 +215,7 @@ Player.prototype._play = function(){
 };
 
 Player.prototype.doPlay = function(){
-    this.speaker._play();
+    this._play();
 };
 
 Player.prototype.startLrcShow = function(){
