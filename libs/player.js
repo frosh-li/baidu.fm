@@ -14,12 +14,20 @@ content:"陪宝贝唱一首童真的歌"},{channel:"public_shiguang_lvxing",cont
 content:"用音乐 冲泡一杯清香惬意的下午茶"},{channel:"public_xinqing_qingsongjiari",content:"抛开烦恼，尽享假日的轻松自在!"},{channel:"public_yuzhong_huayu",content:"经典之外 让好音乐不再错过"},{channel:"public_yuzhong_oumei",content:"那些你听过的、没听过的、最动听的英文歌"},{channel:"public_yuzhong_riyu",content:"网罗最In流行曲 聆听最正日本范儿"},{channel:"public_yuzhong_hanyu",content:"K-pop正流行!"},{channel:"public_yuzhong_yueyu",content:"聆听粤语里的百转千回"},{channel:"public_tuijian_winter",content:"这个冬天，你需要一首暖心的歌"}];
 var fmHost = "http://fm.baidu.com/";
 
+var DEBUG = true;
+
+if (process.env.DEBUG != '1') {
+    DEBUG = false;
+    console.error = function () {};
+}
+
 function Player(){
     this.songList = [];
     this.decoderStream = null;
     this.speaker = null;
     this.stoped = false;
     this.eventMap = {};
+    this.playTime = -1;
     this.lrc = "";
     this.lrcInter = null;
     this.curLrcLine = 0;
@@ -224,7 +232,7 @@ Player.prototype.doPlay = function(){
 
 Player.prototype.startLrcShow = function(){
     var self = this;
-    var lrcStart = Date.now();
+    this.playTime = Date.now();
     if (self.lrcInter) {
         clearInterval(self.lrcInter);
     }
@@ -233,10 +241,28 @@ Player.prototype.startLrcShow = function(){
     self.lrcInter = setInterval(function () {
         if (!lrcObj) {
             lrcObj = getLrcObj(self.lrc);
+            console.error('get lrcObj: ', lrcObj);
         }
-        var pastTime = Date.now() - lrcStart;
-        showLines(lrcObj, 7, pastTime);
-    }, 10);
+        var pastTime = Date.now() - self.playTime;
+        self.showLines(lrcObj, 7, pastTime);
+    }, 100);
+};
+
+Player.prototype.getTimeStr = function (seconds) {
+    var min = Math.floor(seconds / 60);
+    var sec = Math.floor(seconds % 60);
+
+    return [addzero(min, 2), addzero(sec, 2)].join(':');
+
+    function addzero(val, num) {
+        var zs = '';
+        val = val.toString();
+        if (val.length < num) {
+            zs = _.times(num - val.length, function () {return '0';});
+        }
+        return zs + val;
+    }
+
 };
 
 function getLrcObj(content) {
@@ -267,8 +293,9 @@ function getLrcObj(content) {
         if (matches === null) {
             return;
         }
+        timetag = getTimeTag(matches[1], matches[2], matches[3]);
         obj.push({
-            timetag: getTimeTag(matches[1], matches[2], matches[3]),
+            timetag: timetag,
             msg: matches[4]
         });
     });
@@ -277,11 +304,18 @@ function getLrcObj(content) {
 }
 
 function getTimeTag(min, sec, ms) {
-    return min * 60 * 1000 + sec * 1000 + ms * 100;
+    return min * 60 * 1000 + sec * 1000 + ms * 10;
 }
 
-function showLines(lrcObj, totalShowLine, timetag) {
-    curline = _.sortedIndex(lrcObj, {timetag: timetag}, 'timetag');
+Player.prototype.showLines = function (lrcObj, totalShowLine, timetag) {
+    process.stdout.cursorTo(0, 21);
+    process.stdout.clearLine();
+    colorlog.log.yellow('%s/%s', this.getTimeStr((Date.now() - this.playTime) / 1000), this.getTimeStr(this.songList[0].time));
+
+    if (!lrcObj) {
+        return;
+    }
+    curline = _.sortedIndex(lrcObj, {timetag: timetag}, 'timetag') - 1;
     if (this.curLrcLine == curline) {
         return;
     }
@@ -290,13 +324,13 @@ function showLines(lrcObj, totalShowLine, timetag) {
 
     endIndex = curline + Math.floor(totalShowLine / 2);
     startIndex = endIndex - totalShowLine + 1;
-    printLine = 11;
-    while(startIndex < endIndex) {
+    printLine = 12;
+    while(startIndex <= endIndex) {
         process.stdout.cursorTo(0, printLine);
         process.stdout.clearLine();
-        var msg = '';
+        var msg = '    ';
         if (lrcObj[startIndex] && lrcObj[startIndex].msg) {
-            msg = lrcObj[startIndex].msg;
+            msg += lrcObj[startIndex].msg;
         }
         if (startIndex == curline) {
             colorlog.log.yellow(msg);
@@ -307,7 +341,7 @@ function showLines(lrcObj, totalShowLine, timetag) {
         printLine += 1;
         startIndex += 1;
     }
-}
+};
 
 function getIds(list,cb){
     var ret = [];
