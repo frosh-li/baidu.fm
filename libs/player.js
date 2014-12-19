@@ -137,6 +137,7 @@ Player.prototype.playChannel = function(key){
 Player.prototype.stop = function(){
     this.decoderStream && this.decoderStream.unpipe();
     this.decoderStream = null;
+    this.lrc = null;
     this.speaker && this.speaker.end();
     print_Common();
 };
@@ -233,11 +234,13 @@ Player.prototype.doPlay = function(){
 Player.prototype.startLrcShow = function(){
     var self = this;
     this.playTime = Date.now();
+    var lrcObj = getLrcObj(self.lrc);
+
     if (self.lrcInter) {
         clearInterval(self.lrcInter);
+        lrcObj = null;
     }
 
-    var lrcObj = getLrcObj(self.lrc);
     self.lrcInter = setInterval(function () {
         if (!lrcObj) {
             lrcObj = getLrcObj(self.lrc);
