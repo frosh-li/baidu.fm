@@ -87,9 +87,10 @@ Player.prototype.attackEvent = function(){
 Player.prototype.print_channel = function(){
     var self = this;
     if(self.menuStatus == 1){
-        process.stdout.cursorTo(0, 15);
+        process.stdout.cursorTo(0, 0);
         process.stdout.clearScreenDown();
         self.menuStatus = 0;
+        print_Common();
     }else{
         process.stdout.cursorTo(0, 15);
         process.stdout.clearScreenDown();
@@ -200,8 +201,7 @@ Player.prototype._play = function(){
         process.stdout.clearLine();
         totalSize = res.headers['content-length'];
         print_Common();
-        colorlog.log.green('  开始播放',song.artistName,"的",song.songName,"size",new Number(res.headers['content-length']/1024/1024).toFixed(2)+"M");
-        self.startLrcShow();
+        self.startLrcShow(song);
         //colorlog.log.blue('下载进度监控', "0%");
     }).on('error',function(err){
         console.log('缓冲音乐失败，请检查网络后重试');
@@ -231,7 +231,7 @@ Player.prototype.doPlay = function(){
     this._play();
 };
 
-Player.prototype.startLrcShow = function(){
+Player.prototype.startLrcShow = function(song){
     var self = this;
     this.playTime = Date.now();
     var lrcObj = getLrcObj(self.lrc);
@@ -247,7 +247,7 @@ Player.prototype.startLrcShow = function(){
             console.error('get lrcObj: ', lrcObj);
         }
         var pastTime = Date.now() - self.playTime;
-        self.showLines(lrcObj, 7, pastTime);
+        self.showLines(lrcObj, 7, pastTime, song);
     }, 100);
 };
 
@@ -310,10 +310,20 @@ function getTimeTag(min, sec, ms) {
     return min * 60 * 1000 + sec * 1000 + ms * 10;
 }
 
-Player.prototype.showLines = function (lrcObj, totalShowLine, timetag) {
-    process.stdout.cursorTo(0, 21);
+Player.prototype.showLines = function (lrcObj, totalShowLine, timetag, song) {
+    if (this.listOpen || this.menuStatus) {
+        return;
+    }
+
+
+    process.stdout.cursorTo(0, 9);
     process.stdout.clearLine();
-    colorlog.log.yellow('  %s/%s', this.getTimeStr((Date.now() - this.playTime) / 1000), this.getTimeStr(this.songList[0].time));
+    colorlog.log.green('  开始播放',song.artistName,"的",song.songName,"size",(song.size/1024/1024).toFixed(2)+"M");
+
+    var timestr = this.getTimeStr((Date.now() - this.playTime) / 1000) + '/' + this.getTimeStr(song.time);
+    process.stdout.cursorTo(0, 22);
+    process.stdout.clearLine();
+    colorlog.log.yellow('  ' + timestr);
 
     if (!lrcObj) {
         return;
