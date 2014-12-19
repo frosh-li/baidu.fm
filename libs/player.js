@@ -181,7 +181,7 @@ Player.prototype._play = function(){
     var self = this;
     var song = self.songList[0];
     print_Common();
-    colorlog.log.green('开始缓冲',song.artistName,"的",song.songName);
+    colorlog.log.green('  开始缓冲',song.artistName,"的",song.songName);
     var req = request.get(song.songLink);
     var decoder = new lame.Decoder();
     self.speaker = new Speaker();
@@ -200,7 +200,7 @@ Player.prototype._play = function(){
         process.stdout.clearLine();
         totalSize = res.headers['content-length'];
         print_Common();
-        colorlog.log.green('开始播放',song.artistName,"的",song.songName,"size",new Number(res.headers['content-length']/1024/1024).toFixed(2)+"M");
+        colorlog.log.green('  开始播放',song.artistName,"的",song.songName,"size",new Number(res.headers['content-length']/1024/1024).toFixed(2)+"M");
         self.startLrcShow();
         //colorlog.log.blue('下载进度监控', "0%");
     }).on('error',function(err){
@@ -313,7 +313,7 @@ function getTimeTag(min, sec, ms) {
 Player.prototype.showLines = function (lrcObj, totalShowLine, timetag) {
     process.stdout.cursorTo(0, 21);
     process.stdout.clearLine();
-    colorlog.log.yellow('%s/%s', this.getTimeStr((Date.now() - this.playTime) / 1000), this.getTimeStr(this.songList[0].time));
+    colorlog.log.yellow('  %s/%s', this.getTimeStr((Date.now() - this.playTime) / 1000), this.getTimeStr(this.songList[0].time));
 
     if (!lrcObj) {
         return;
@@ -331,7 +331,7 @@ Player.prototype.showLines = function (lrcObj, totalShowLine, timetag) {
     while(startIndex <= endIndex) {
         process.stdout.cursorTo(0, printLine);
         process.stdout.clearLine();
-        var msg = '    ';
+        var msg = '      ';
         if (lrcObj[startIndex] && lrcObj[startIndex].msg) {
             msg += lrcObj[startIndex].msg;
         }
@@ -384,14 +384,14 @@ function getMp3Lists(ids, cb){
 function print_Common(){
     process.stdout.cursorTo(0,0);
     process.stdout.clearScreenDown();
-    colorlog.log.green('----------------------');
-    colorlog.log.red('    百度音乐随心听');
-    colorlog.log.green('    n: 下一首');
-    colorlog.log.green('    p: 继续');
-    colorlog.log.green('    s: 暂停');
-    colorlog.log.green('    w: 选择音乐频道');
-    colorlog.log.green('    l: 打印剩余歌单');
-    colorlog.log.green('    q: 退出播放器');
-    colorlog.log.green('----------------------');
+    colorlog.log.green('  ----------------------');
+    colorlog.log.red('      百度音乐随心听');
+    colorlog.log.green('      n: 下一首');
+    colorlog.log.green('      p: 继续');
+    colorlog.log.green('      s: 暂停');
+    colorlog.log.green('      w: 选择音乐频道');
+    colorlog.log.green('      l: 打印剩余歌单');
+    colorlog.log.green('      q: 退出播放器');
+    colorlog.log.green('  ----------------------');
 }
 module.exports = Player;
