@@ -31,6 +31,7 @@ function Player(){
     this.eventMap = {};
     this.playTime = -1;
     this.lrc = null;
+    this.retryGetLrcIndex = 0;
     this.lrcInter = null;
     this.curLrcLine = 0;
     this.channel = "public_fengge_liuxing";
@@ -141,6 +142,7 @@ Player.prototype.stop = function(){
     this.decoderStream && this.decoderStream.unpipe();
     this.decoderStream = null;
     this.lrc = null;
+    this.retryGetLrcIndex += 1;
     this.speaker && this.speaker.end();
     print_Common();
 };
@@ -180,6 +182,25 @@ Player.prototype.printList = function(){
 
 };
 
+Player.prototype.getLrc = function(url) {
+    var self = this;
+    var retry = this.retryGetLrcIndex;
+    request.get(url, function (err, res, body){
+        if (err || res.statusCode != 200) {
+            console.error('get lrc error', res.statusCode, err);
+            setTimeout(function () {
+                console.error('retry get lrc from', url);
+                if (retry === self.retryGetLrcIndex) {
+                    self.getLrc(url);
+                }
+            }, 2000);
+        } else {
+            self.lrc = body.toString('utf-8');
+            console.error('get new lrc ', self.lrc);
+        }
+    });
+};
+
 Player.prototype._play = function(){
     var self = this;
     var song = self.songList[0];
@@ -190,16 +211,10 @@ Player.prototype._play = function(){
     self.speaker = new Speaker();
     var downloaded = 0;
     var totalSize = 0;
-    console.error('get lrc url: ', fmHost+song.lrcLink);
+    var lrcUrl = fmHost + song.lrcLink;
+    console.error('get lrc url: ', lrcUrl);
     self.lrc = null;
-    var reqLrc = request.get(fmHost+song.lrcLink, function(err, res, body){
-        if(err){
-            return;
-        }
-        self.lrc = body.toString("utf-8");
-        console.error(fmHost+song.lrcLink);
-        console.error('get new lrc ', self.lrc);
-    });
+    self.getLrc(lrcUrl);
     req.on('response', function(res){
         //console.log(res.headers);
         process.stdout.moveCursor(0,-1);
