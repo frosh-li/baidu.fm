@@ -21,6 +21,8 @@ if (process.env.DEBUG != '1') {
     console.error = function () {};
 }
 
+console.log('\033[?25l');
+
 function Player(){
     this.songList = [];
     this.decoderStream = null;
@@ -318,12 +320,13 @@ Player.prototype.showLines = function (lrcObj, totalShowLine, timetag, song) {
 
     process.stdout.cursorTo(0, 9);
     process.stdout.clearLine();
-    colorlog.log.green('  开始播放',song.artistName,"的",song.songName,"size",(song.size/1024/1024).toFixed(2)+"M");
-
     var timestr = this.getTimeStr((Date.now() - this.playTime) / 1000) + '/' + this.getTimeStr(song.time);
+    //"size",(song.size/1024/1024).toFixed(2)+"M"
+    colorlog.log.green('  开始播放',song.artistName,"的",song.songName,"\033[20;33m["+timestr+"]\033[0m");
+
     process.stdout.cursorTo(0, 22);
     process.stdout.clearLine();
-    colorlog.log.yellow('  ' + timestr);
+    //colorlog.log.yellow('  ' + timestr);
 
     if (!lrcObj) {
         return;
