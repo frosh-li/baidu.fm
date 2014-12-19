@@ -280,6 +280,12 @@ function getLrcObj(content) {
     var obj = [];
     var lines = content.split('\n');
     _.forEach(lines, function (line) {
+        parseLine(line);
+    });
+
+    return obj;
+
+    function parseLine(line) {
         line = line.trim();
         if (line.indexOf('[') !== 0) {
             return;
@@ -295,19 +301,22 @@ function getLrcObj(content) {
               input: '[00:02.52]作曲：许嵩 作词：许嵩'
             ]
         */
-        re = new RegExp(/\[([0-9]{2}):([0-9]{2})\.([0-9]{2})\](.*)/);
-        matches = line.match(re);
+        var re = new RegExp(/\[([0-9]{2}):([0-9]{2})\.([0-9]{2})\](.*)/);
+        var matches = line.match(re);
         if (matches === null) {
             return;
         }
         timetag = getTimeTag(matches[1], matches[2], matches[3]);
-        obj.push({
-            timetag: timetag,
-            msg: matches[4]
-        });
-    });
-
-    return obj;
+        if (!matches[4].match(re)) {
+            obj.push({
+                timetag: timetag,
+                msg: matches[4]
+            });
+        } else {
+            obj.push({timetag: timetag, msg: ''});
+            parseLine(matches[4]);
+        }
+    }
 }
 
 function getTimeTag(min, sec, ms) {
