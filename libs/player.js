@@ -14,11 +14,25 @@ content:"陪宝贝唱一首童真的歌"},{channel:"public_shiguang_lvxing",cont
 content:"用音乐 冲泡一杯清香惬意的下午茶"},{channel:"public_xinqing_qingsongjiari",content:"抛开烦恼，尽享假日的轻松自在!"},{channel:"public_yuzhong_huayu",content:"经典之外 让好音乐不再错过"},{channel:"public_yuzhong_oumei",content:"那些你听过的、没听过的、最动听的英文歌"},{channel:"public_yuzhong_riyu",content:"网罗最In流行曲 聆听最正日本范儿"},{channel:"public_yuzhong_hanyu",content:"K-pop正流行!"},{channel:"public_yuzhong_yueyu",content:"聆听粤语里的百转千回"},{channel:"public_tuijian_winter",content:"这个冬天，你需要一首暖心的歌"}];
 var fmHost = "http://fm.baidu.com/";
 
-var DEBUG = true;
 
-if (process.env.DEBUG != '1') {
-    DEBUG = false;
-    console.error = function () {};
+var originConsoleError = console.error;
+console.error = function () {};
+var DEBUG = false;
+
+function toggleDebug() {
+    if (DEBUG) {
+        DEBUG = false;
+        console.error('debug off');
+        console.error = function () {};
+    } else {
+        DEBUG = true;
+        console.error = originConsoleError;
+        console.error('debug on');
+    }
+}
+
+if (process.env.DEBUG === '1') {
+    toggleDebug();
 }
 
 console.log('\033[?25l');
@@ -80,6 +94,9 @@ Player.prototype.attackEvent = function(){
         if(key && key.name == "p" && self.stoped == true){
             self.stoped = false;
             self.doPlay();
+        }
+        if (key && key.name == 'd') {
+            toggleDebug();
         }
     });
     process.stdin.setRawMode(true);
@@ -360,7 +377,7 @@ Player.prototype.showLines = function (lrcObj, totalShowLine, timetag, song) {
         return;
     }
     curline = _.sortedIndex(lrcObj, {timetag: timetag}, 'timetag') - 1;
-    if (this.curLrcLine == curline) {
+    if (this.curLrcLine == curline && !DEBUG) {
         return;
     }
     this.curLrcLine = curline;
@@ -374,6 +391,9 @@ Player.prototype.showLines = function (lrcObj, totalShowLine, timetag, song) {
         process.stdout.clearLine();
         var msg = '      ';
         if (lrcObj[startIndex] && lrcObj[startIndex].msg) {
+            if (DEBUG) {
+                msg += timetag + ' ' + lrcObj[startIndex].timetag + ' ';
+            }
             msg += lrcObj[startIndex].msg;
         }
         if (startIndex == curline) {
