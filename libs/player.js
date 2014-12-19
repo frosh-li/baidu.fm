@@ -62,7 +62,7 @@ Player.prototype.attackEvent = function(){
         if(key && key.name == "n"){
             self.playNext();
         }
-        if(key && key.name == "q"){
+        if(key && (key.name == "q" || key.name == "x")){
             process.stdout.clearScreenDown();
             process.exit(0);
         }
@@ -197,6 +197,7 @@ Player.prototype._play = function(){
             return;
         }
         self.lrc = body.toString("utf-8");
+        console.error(fmHost+song.lrcLink);
         console.error('get new lrc ', self.lrc);
     });
     req.on('response', function(res){
