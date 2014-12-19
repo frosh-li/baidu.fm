@@ -190,13 +190,15 @@ Player.prototype.getLrc = function(url) {
             console.error('get lrc error', res.statusCode, err);
             setTimeout(function () {
                 console.error('retry get lrc from', url);
-                if (retry === self.retryGetLrcIndex) {
+                if (retry === self.retryGetLrcIndex) {  // 切换下首歌，则不会重试上首歌的歌词
                     self.getLrc(url);
                 }
             }, 2000);
         } else {
-            self.lrc = body.toString('utf-8');
-            console.error('get new lrc ', self.lrc);
+            if (retry === self.retryGetLrcIndex) {  // 上首歌的歌词不会替换当前的歌词
+                self.lrc = body.toString('utf-8');
+                console.error('get new lrc ', self.lrc);
+            }
         }
     });
 };
