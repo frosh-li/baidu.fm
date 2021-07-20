@@ -1,25 +1,30 @@
-#baidu.fm
+# baidu.fm
 [![Travis branch](https://img.shields.io/travis/joyent/node/v0.6.svg)](https://www.npmjs.com/package/baidu.fm)   [![npm](https://img.shields.io/npm/dm/localeval.svg)](https://www.npmjs.com/package/baidu.fm)
 
-##百度音乐随心听命令行版本
+## 百度音乐随心听命令行版本
 
-###Installation
-
+### Installation
+```
 $ sudo npm install baidu.fm -g
+```
 
 
-###On Debian/Ubuntu, the ALSA backend is selected by default, so be sure to have the alsa.h header file in place:
-
+### On Debian/Ubuntu, the ALSA backend is selected by default, so be sure to have the alsa.h header file in place:
+```
 $ sudo apt-get install libasound2-dev
+```
 
-
-###Run
+### Run
+```
 baidu.fm
+```
 
-###获取git获取后
+### 获取git获取后
+```
 npm install
+```
 然后
-###npm start也可以启动
+### ```npm start```也可以启动
 
 + 1.播放下一首
 
